@@ -2,7 +2,6 @@ var express = require('express');
 var app = module.exports = express.createServer();
 
 // Configuration
-var io = require('socket.io').listen(app);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -29,14 +28,10 @@ app.get('/controller/:sid',function(req,res){
 	res.render('controller',{sid:req.params.sid});
 })
 
-//Socket.io
-io.sockets.on('connection',function(socket){
-	socket.on("message",function(message){
-		io.sockets.socket(message.sid).send(message.command)
-	});
-});
+
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
 
+var evtserver = require('./evtserver.js').listen(app);
 
